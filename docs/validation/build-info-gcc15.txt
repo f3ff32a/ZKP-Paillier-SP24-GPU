@@ -1,0 +1,17 @@
+project=ZKP-Paillier-SP24-GPU2
+version=2.0.0
+system=Linux 6.18.44
+processor=x86_64
+cmake=4.4.3
+cxx=<workspace>/.local-deps/gcc15/usr/bin/x86_64-linux-gnu-g++-15
+cxx_version=15.2.0
+cuda_enabled=ON
+cuda_compiler=<workspace>/.local-deps/cuda13/bin/nvcc
+cuda_version=13.4.59
+cuda_host=<workspace>/.local-deps/gcc15/usr/bin/x86_64-linux-gnu-g++-15
+cuda_architectures=89-real
+openmp=ON
+ntl=<workspace>/.local-deps/sysroot/usr/lib/x86_64-linux-gnu/libntl.so
+ntl_include=<workspace>/.local-deps/sysroot/usr/include
+gmp=<workspace>/.local-deps/sysroot/usr/lib/x86_64-linux-gnu/libgmp.a
+gmp_include=<workspace>/.local-deps/sysroot/usr/include/x86_64-linux-gnu
