@@ -16,8 +16,6 @@
 | [ZKP-Paillier-SP24-GPU720.zip](ZKP-Paillier-SP24-GPU720.zip) | GPU720 为原归档标识 | 含对应机器的程序与历史记录；现有实验日志记录 CPU/OpenMP 基线，`backend=cpu`、`gpu=0`。 |
 | [ZKP-Paillier-SP24-GPUIntelHD.zip](ZKP-Paillier-SP24-GPUIntelHD.zip) | IntelHD 为原归档标识 | 含对应机器的程序与历史记录；现有实验日志记录 CPU/OpenMP 基线，`backend=cpu`、`gpu=0`。 |
 
-设备型号和实际后端以各次运行日志、环境记录为准。包内 README 可能沿用早期 RTX 4060 模板；GPU4090 包中的部分早期验证目录也记录的是 RTX 4060 Laptop，不能据此认定 RTX 4090 D 已完成同一组验证。GPU720、IntelHD 包中的上述 CPU 记录不能作为相应 GPU 的加速结果。
-
 ### 下载、运行与比较
 
 1. 下载目标机器对应的 ZIP，并解压到独立目录，保留包内源码、CSV、日志与环境记录之间的对应关系。
