@@ -1,8 +1,31 @@
-# ZKP-Paillier-SP24-GPU2
+# ZKP-Paillier-SP24-GPU加速化
 
-基于上传的 `ZKP-Paillier-SP24-parallel-v6` 增加 NVIDIA CUDA GPU 后端，保留 CPU/OpenMP 路径，并支持 CPU 与 GPU 同时处理独立任务。
+基于 `ZKP-Paillier-SP24-parallel-v6` 增加 NVIDIA CUDA GPU 后端，保留 CPU/OpenMP 路径，并支持 CPU 与 GPU 同时处理独立任务。本仓库主目录面向 RTX 4060 Laptop，同时收录不同机器上的程序与历史实验记录，便于开展跨机器、跨后端的比较。
 
-GPU2 已完成 CPU 构建、GCC 13.3 / GCC 15.2 + CUDA 13.4 的 sm_89 编译链接、CPU 正确性和原 v6 对照验证。交付环境没有可用 NVIDIA GPU，因此 CUDA 内核的实机正确性、显存检查和加速比尚待实机验证。请先运行下方 GPU 正确性测试，再采集性能数据。当前构建测试平台是 Ubuntu 24.04；Ubuntu 26.04 真机与 RTX 4060 的最终验证需要在你的笔记本执行。详细记录见 [验证记录](docs/VALIDATION.md)。
+初始交付阶段已完成 CPU 构建、GCC 13.3 / GCC 15.2 + CUDA 13.4 的 sm_89 编译链接、CPU 正确性和原 v6 对照验证；当时的执行环境没有可用 NVIDIA GPU。该阶段的环境和验证范围见 [验证记录](docs/VALIDATION.md)。后续收录的 GPU 运行结果应分别查看对应机器的原始日志，不能把早期编译验证或其他机器的验证报告作为本机实测结论。在新机器上运行时，请先完成下方 GPU 正确性测试，再采集性能数据。
+
+## 不同机器的程序与比较包
+
+主目录保留 RTX 4060 Laptop 版本的源码、构建脚本与运行入口，以及根目录的 `cuda_512_mc*.csv` / `cuda_512_mc*.log` 历史实验记录。其他机器的程序和记录按原文件名保存在以下 ZIP 包中：
+
+| 比较包 | 日志中的设备或归档标识 | 内容与使用说明 |
+|---|---|---|
+| [ZKP-Paillier-SP24-GPU1650.zip](ZKP-Paillier-SP24-GPU1650.zip) | NVIDIA GeForce GTX 1650，`sm_75` | 含源码、历史实验与环境记录；已核查的性能日志使用 CUDA 后端。 |
+| [ZKP-Paillier-SP24-GPU2080.zip](ZKP-Paillier-SP24-GPU2080.zip) | NVIDIA GeForce RTX 2080 Ti，`sm_75` | 含源码与历史 CSV / 日志；已核查的性能日志使用 CUDA 后端。文件名沿用 GPU2080。 |
+| [ZKP-Paillier-SP24-GPU4090.zip](ZKP-Paillier-SP24-GPU4090.zip) | NVIDIA GeForce RTX 4090 D，`sm_89` | 含源码与历史 CSV / 日志；已核查的性能日志使用 CUDA 后端。文件名沿用 GPU4090。 |
+| [ZKP-Paillier-SP24-GPU720.zip](ZKP-Paillier-SP24-GPU720.zip) | GPU720 为原归档标识 | 含对应机器的程序与历史记录；现有实验日志记录 CPU/OpenMP 基线，`backend=cpu`、`gpu=0`。 |
+| [ZKP-Paillier-SP24-GPUIntelHD.zip](ZKP-Paillier-SP24-GPUIntelHD.zip) | IntelHD 为原归档标识 | 含对应机器的程序与历史记录；现有实验日志记录 CPU/OpenMP 基线，`backend=cpu`、`gpu=0`。 |
+
+设备型号和实际后端以各次运行日志、环境记录为准。包内 README 可能沿用早期 RTX 4060 模板；GPU4090 包中的部分早期验证目录也记录的是 RTX 4060 Laptop，不能据此认定 RTX 4090 D 已完成同一组验证。GPU720、IntelHD 包中的上述 CPU 记录不能作为相应 GPU 的加速结果。
+
+### 下载、运行与比较
+
+1. 下载目标机器对应的 ZIP，并解压到独立目录，保留包内源码、CSV、日志与环境记录之间的对应关系。
+2. 根据本机硬件和工具链选择构建方式：CPU/OpenMP 使用 `--backend cpu`；NVIDIA CUDA 构建需选择本机支持的架构。GTX 1650 / RTX 2080 Ti 对应 `75-real`，RTX 4060 Laptop / RTX 4090 D 对应 `89-real`，同时应核实所用 CUDA Toolkit 对目标架构的支持。
+3. 在目标机器重新构建并完成正确性验证后，再运行性能测试。运行参数与测试入口见下方各节；包内预编译文件和历史成功记录不能替代本机验证。
+4. 比较时统一密钥位数、消息数量、范围证明参数、线程预算、后端、重复次数与计时范围，并同时记录 CPU、GPU、操作系统、驱动、编译器及 CUDA 版本。跨机器结果同时反映硬件和软件环境差异；同机 CPU/GPU 加速比应使用该机器上的 CPU 基线计算。
+
+历史 CSV 与日志用于追溯已完成的运行，不代表本次重新执行或复现了全部实验。部分扫描日志存在未完成尾段；完整协议运行以对应日志中的 `VERIFICATION=PASS` 为准，GPU 专项验收以 `GPU_VALIDATION=PASS` 为准，并检查是否有实际 GPU 任务及是否发生回退。`WALL_SECONDS`、阶段耗时和 CUDA 内核耗时应按各自计时范围分别比较；不要把普通 Paillier 算子耗时与完整 ZKP 协议耗时混为一项结果。
 
 ## 并行化范围
 
